@@ -14,7 +14,7 @@ const app = express();
 
 // Set up CORS to allow requests from your frontend
 app.use(cors({
-  origin: 'http://localhost:3000' // Allow requests from your frontend
+  origin: 'https://healthwelnessapp.netlify.app' // Allow requests from your frontend
 }));
 app.use(express.json());
 
