@@ -1,4 +1,4 @@
-//backend/server.js
+// backend/server.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -35,6 +35,7 @@ app.use(cors({
 // Handle preflight requests (OPTIONS)
 app.options('*', cors()); // This will handle all OPTIONS requests globally
 
+// Middleware to parse JSON request bodies
 app.use(express.json());
 
 // Import Routes
@@ -53,6 +54,11 @@ app.use('/api/users', userRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/nutrition', nutritionRoutes);
 app.use('/api/goals', goalRoutes);
+
+// Catch-all for undefined routes (returns 404 error)
+app.use((req, res, next) => {
+  res.status(404).json({ message: 'Route not found' });
+});
 
 // Start the server
 const PORT = process.env.PORT || 5000;
