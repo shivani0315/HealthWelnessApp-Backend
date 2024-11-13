@@ -1,4 +1,3 @@
-//backend\server.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -12,10 +11,24 @@ connectDB();
 
 const app = express();
 
-// Set up CORS to allow requests from your frontend
+// Set up CORS to allow requests from both local and production environments
+const allowedOrigins = [
+  'http://localhost:3000', // Local development
+  'https://healthwelnessapp.netlify.app' // Production
+];
+
 app.use(cors({
-  origin: 'https://healthwelnessapp.netlify.app' // Allow requests from your frontend
+  origin: function(origin, callback) {
+    // Allow requests from allowed origins or no origin (for mobile apps or server-to-server requests)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
 }));
+
 app.use(express.json());
 
 // Import Routes
