@@ -1,9 +1,10 @@
+//backend/server.js
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-const cron = require('node-cron'); // Import node-cron
-const { sendReminder } = require('./config/nodemailer'); // Import your email sending function
+const cron = require('node-cron');
+const { sendReminder } = require('./config/nodemailer');
 const User = require('./models/User'); // Adjust the path according to your structure
 
 dotenv.config();
@@ -14,12 +15,13 @@ const app = express();
 // Set up CORS to allow requests from both local and production environments
 const allowedOrigins = [
   'http://localhost:3000', // Local development
-  'https://healthwelnessapp.netlify.app' // Production
+  'https://healthwelnessapp.netlify.app', // Production (replace with your deployed frontend URL)
+  'https://healthwelnessapp.onrender.com' // Production backend URL (for Render)
 ];
 
+// Enable CORS middleware with additional configuration
 app.use(cors({
   origin: function(origin, callback) {
-    // Allow requests from allowed origins or no origin (for mobile apps or server-to-server requests)
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
@@ -27,7 +29,11 @@ app.use(cors({
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific HTTP methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow custom headers (e.g., Authorization for JWT)
 }));
+
+// Handle preflight requests (OPTIONS)
+app.options('*', cors()); // This will handle all OPTIONS requests globally
 
 app.use(express.json());
 
