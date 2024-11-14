@@ -5,15 +5,15 @@ const { sendEmail } = require('../config/nodemailer');
 
 // Set a new goal for the user
 exports.setGoal = async (req, res) => {
-    const { type, target } = req.body; // Only retrieve type and target
+    const { type, target } = req.body;
     try {
-        // Log the goal setting attempt for debugging
-        console.log('Setting new goal:', { userId: req.user.id, type, target });
+        // Log the user and goal details for debugging
+        console.log('Setting new goal for user:', { userId: req.user.id, type, target });
 
         // Create the goal
         const goal = await Goal.create({ userId: req.user.id, type, target });
 
-        // Send confirmation email
+        // Send confirmation email (assuming email sending works)
         await sendEmail(req.user.email, 'Goal Set', `Your goal of ${target} for ${type} has been set.`);
         res.status(201).json(goal);
     } catch (error) {
@@ -21,7 +21,6 @@ exports.setGoal = async (req, res) => {
         res.status(500).json({ message: 'Failed to create goal', error: error.message });
     }
 };
-
 
 
 // Get all goals for the logged-in user
