@@ -1,15 +1,24 @@
-// userRoutes.js
-const express = require('express');
-const { registerUser, loginUser } = require('../controllers/userController');
-const { protect } = require('../middleware/authMiddleware'); // Import your protect middleware
-
+const express = require("express");
+const {
+  registerUser,
+  loginUser,
+  verifyEmail,
+  getUserById,
+  updateUserProfile,
+  contactUs,
+} = require("../controllers/userController");
+const protect = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post('/register', registerUser);
-router.post('/login', loginUser);
-router.get('/profile', protect, async (req, res) => {
-    res.json(req.user); // Return the authenticated user's details
-});
+// Public Routes
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.get("/verify-email/:token", verifyEmail);
+router.post("/contact", contactUs);
+
+// Protected Routes
+router.get("/:id", protect, getUserById);
+router.put("/profile", protect, updateUserProfile);
 
 module.exports = router;

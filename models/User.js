@@ -1,27 +1,34 @@
-
 //backend\models\User.js
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  name: String,
+  email: { type: String, unique: true },
+  password: String,
+  isVerified: { type: Boolean, default: false },
+  verificationToken: String,
+  profileImage: {
+    type: String,
+    default: '',
+  },
+  height: {
+    type: Number,
+    default: null,
+  },
+  weight: {
+    type: Number,
+    default: null,
+  },
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other'],
+    default: null,
+  },
+  age: {
+    type: Number,
+    default: null,
+  },
 });
 
-// Hash password before saving to the database
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
+module.exports = mongoose.model("User", userSchema);
 
-// Method to compare entered password with the hashed password
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
-const User = mongoose.model('User', userSchema);
-module.exports = User;
